@@ -124,10 +124,11 @@ public class ItemService {
         if (text == null || text.isBlank()) {
             return List.of();
         }
+        String lowerCaseText = text.toLowerCase();
         return itemStorage.getAll().stream()
                 .filter(Item::getAvailable)
-                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .filter(item -> item.getName().toLowerCase().contains(lowerCaseText)
+                        || item.getDescription().toLowerCase().contains(lowerCaseText))
                 .map(ItemMapper::toItemDto)
                 .toList();
     }
@@ -152,7 +153,8 @@ public class ItemService {
      */
     public void userIsOwner(Long id, Long userId) {
         userService.exists(userId);
-        if (!itemStorage.read(id).getOwner().equals(userId)) {
+        Item item = itemStorage.read(id);
+        if (item == null || !item.getOwner().equals(userId)) {
             throw new ConditionsNotMetException("Пользователь не владелец предмета");
         }
     }
