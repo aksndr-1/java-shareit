@@ -1,8 +1,9 @@
 package ru.practicum.shareit.item.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.request.ItemRequest;
 
 /**
  * Класс, представляющий предмет.
@@ -12,7 +13,7 @@ import ru.practicum.shareit.request.ItemRequest;
  */
 @Data
 @Builder
-public class Item {
+public class ItemDto {
     /**
      * Идентификатор предмета.
      */
@@ -21,25 +22,18 @@ public class Item {
     /**
      * Название предмета.
      */
+    @NotBlank
     private String name;
 
     /**
      * Описание предмета.
      */
+    @NotBlank
     private String description;
 
     /**
      * Доступность предмета.
      */
+    @NotNull
     private Boolean available;
-
-    /**
-     * Идентификатор владельца предмета.
-     */
-    private Long owner;
-
-    /**
-     * Запрос на предмет.
-     */
-    private ItemRequest request;
 }
