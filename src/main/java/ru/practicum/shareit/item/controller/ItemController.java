@@ -43,7 +43,7 @@ public class ItemController {
         log.info("Получен запрос на получение предметов пользователя {}", userId);
         List<ItemDto> itemDtos = itemService.getUserItems(userId);
         log.info("Предметы {} успешно получены", itemDtos);
-        return itemService.getUserItems(userId);
+        return itemDtos;
     }
 
     /**
@@ -113,3 +113,4 @@ public class ItemController {
         return itemDto;
     }
 }
+
