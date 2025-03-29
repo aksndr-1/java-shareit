@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemStorage itemStorage;
-    private final UserService userService;
+    private final UserStorage userStorage;
 
     /**
      * Метод для получения предмета по идентификатору.
@@ -45,7 +46,8 @@ public class ItemService {
      * @return список предметов пользователя
      */
     public List<ItemDto> getUserItems(Long userId) {
-        userService.exists(userId);
+        Optional.ofNullable(userStorage.read(userId))
+                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.USER_NOT_FOUND_ERROR, userId)));
         return itemStorage.getAll()
                 .stream()
                 .filter(item -> item.getOwner().equals(userId))
@@ -61,8 +63,10 @@ public class ItemService {
      * @return предмет
      */
     public Item getItem(Long id, Long userId) {
-        userService.exists(userId);
-        exists(id);
+        Optional.ofNullable(userStorage.read(userId))
+                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.USER_NOT_FOUND_ERROR, userId)));
+        Optional.ofNullable(itemStorage.read(id))
+                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.ITEM_NOT_FOUND_ERROR, id)));
         return itemStorage.read(id);
     }
 
@@ -74,7 +78,8 @@ public class ItemService {
      * @return созданный предмет
      */
     public ItemDto create(ItemDto itemDto, Long userId) {
-        userService.exists(userId);
+        Optional.ofNullable(userStorage.read(userId))
+                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.USER_NOT_FOUND_ERROR, userId)));
         return ItemMapper.toItemDto(itemStorage.create(ItemMapper.toItem(itemDto, userId)));
     }
 
@@ -134,17 +139,6 @@ public class ItemService {
     }
 
     /**
-     * Метод для проверки существования предмета по идентификатору.
-     *
-     * @param id идентификатор предмета
-     * @throws ConditionsNotMetException если предмет не найден
-     */
-    public void exists(Long id) throws ConditionsNotMetException {
-        Optional.ofNullable(itemStorage.read(id))
-                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.ITEM_NOT_FOUND_ERROR, id)));
-    }
-
-    /**
      * Метод для проверки, является ли пользователь владельцем предмета.
      *
      * @param id идентификатор предмета
@@ -152,7 +146,8 @@ public class ItemService {
      * @throws ConditionsNotMetException если пользователь не является владельцем предмета
      */
     public void userIsOwner(Long id, Long userId) {
-        userService.exists(userId);
+        Optional.ofNullable(userStorage.read(userId))
+                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.USER_NOT_FOUND_ERROR, userId)));
         Item item = itemStorage.read(id);
         if (item == null || !item.getOwner().equals(userId)) {
             throw new ConditionsNotMetException("Пользователь не владелец предмета");
