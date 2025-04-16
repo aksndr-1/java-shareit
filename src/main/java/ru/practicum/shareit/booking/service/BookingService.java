@@ -98,7 +98,12 @@ public class BookingService {
     }
 
     public BookingDto updateBookingStatus(Long bookingId, Long userId, Boolean approved) {
-        Booking booking = getBooking(bookingId);
+        Optional<Booking> bookingOptional = getBooking(bookingId);
+        if (bookingOptional.isEmpty()) {
+            throw new NotFoundException(ExceptionMessages.BOOKING_GET_INFO_ERROR);
+        }
+
+        Booking booking = bookingOptional.get();
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new WrongUserExeption(ExceptionMessages.BOOKING_CHANGE_STATUS);
         }
@@ -110,7 +115,12 @@ public class BookingService {
 
     // Отмена брони пользователем
     public BookingDto cancelBooking(Long bookingId, Long userId) {
-        Booking booking = getBooking(bookingId);
+        Optional<Booking> bookingOptional = getBooking(bookingId);
+        if (bookingOptional.isEmpty()) {
+            throw new NotFoundException(ExceptionMessages.BOOKING_GET_INFO_ERROR);
+        }
+
+        Booking booking = bookingOptional.get();
 
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new ConditionsNotMetException(ExceptionMessages.BOOKING_CHANGE_STATUS);
