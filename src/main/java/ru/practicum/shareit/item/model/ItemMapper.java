@@ -1,12 +1,12 @@
 package ru.practicum.shareit.item.model;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.comment.model.CommentDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-@Component
+@UtilityClass
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
