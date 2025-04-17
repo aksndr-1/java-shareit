@@ -9,13 +9,14 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class CommentDto {
-    Long id;
+    private Long id;
+
     @NotBlank(message = "Текст отзыва не может быть пустым")
-    String text;
+    private String text;
 
-    Long itemId;
+    private Long itemId;
 
-    String authorName;
+    private String authorName;
 
-    LocalDateTime created;
+    private LocalDateTime created;
 }
