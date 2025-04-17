@@ -10,9 +10,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.extention.ConditionsNotMetException;
-import ru.practicum.shareit.extention.NotFoundException;
-import ru.practicum.shareit.extention.WrongUserExeption;
+import ru.practicum.shareit.exceptions.ConditionsNotMetException;
+import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.WrongUserExeption;
 
 import java.util.ArrayList;
 import java.util.HashMap;

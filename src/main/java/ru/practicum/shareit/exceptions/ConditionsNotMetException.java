@@ -1,4 +1,4 @@
-package ru.practicum.shareit.extention;
+package ru.practicum.shareit.exceptions;
 
 public class ConditionsNotMetException extends RuntimeException {
     public ConditionsNotMetException(String message) {

@@ -2,10 +2,10 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.extention.ConditionsNotMetException;
-import ru.practicum.shareit.extention.DuplicatedDataException;
-import ru.practicum.shareit.extention.ExceptionMessages;
-import ru.practicum.shareit.extention.NotFoundException;
+import ru.practicum.shareit.exceptions.ConditionsNotMetException;
+import ru.practicum.shareit.exceptions.DuplicatedDataException;
+import ru.practicum.shareit.exceptions.ExceptionMessages;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;

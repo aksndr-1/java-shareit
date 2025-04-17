@@ -7,8 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.ShareItApp;
-import ru.practicum.shareit.extention.DuplicatedDataException;
-import ru.practicum.shareit.extention.NotFoundException;
+import ru.practicum.shareit.exceptions.DuplicatedDataException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.model.UserDto;
 
