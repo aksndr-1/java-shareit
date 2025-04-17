@@ -17,9 +17,9 @@ import ru.practicum.shareit.exceptions.ExceptionMessages;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.WrongUserExeption;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,8 +29,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookingService {
     private final BookingRepository bookingRepository;
-    private final UserService userService;
-    private final ItemService itemService;
+    private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
     private final StateMachineFactory<BookingStatusType, BookingEvent> stateMachineFactory;
 
     public BookingDto getBookingDto(Long bookingId, Long userId) {
@@ -66,7 +66,8 @@ public class BookingService {
     }
 
     public List<BookingDto> readByOwnerAndState(BookingState state, Long userId) {
-        userService.getUser(userId);
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.USER_NOT_FOUND_ERROR, userId)));
         List<Booking> bookings = switch (state) {
             case ALL -> bookingRepository.findAllByItemOwnerIdOrderByStartAsc(userId);
             case WAITING ->
@@ -87,8 +88,10 @@ public class BookingService {
     }
 
     public BookingDto createBooking(BookingDto bookingDto, Long userId) {
-        User user = userService.getUser(userId);
-        Item item = itemService.getItem(bookingDto.getItemId());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.USER_NOT_FOUND_ERROR, userId)));
+        Item item = itemRepository.findById(bookingDto.getItemId())
+                .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.ITEM_NOT_FOUND_ERROR, bookingDto.getItemId())));
 
         Booking booking = BookingMapper.toBooking(bookingDto, item, user);
         validateBooking(booking);

@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.comment.model.CommentDto;
-import ru.practicum.shareit.comment.service.CommentService;
+import ru.practicum.shareit.comment.model.CommentMapper;
+import ru.practicum.shareit.comment.repository.CommentRepository;
 import ru.practicum.shareit.exceptions.ConditionsNotMetException;
 import ru.practicum.shareit.exceptions.ExceptionMessages;
 import ru.practicum.shareit.exceptions.NotFoundException;
@@ -26,11 +28,17 @@ import java.util.List;
 public class ItemService {
     private final UserService userService;
     private final ItemRepository itemRepository;
-    private final CommentService commentService;
+    private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
 
-    public ItemDto getItemDto(Long id) {
-        return ItemMapper.toItemDto(getItem(id), commentService.getItemComments(id));
+    public ItemDto getItemDto(Long itemId) {
+
+        List<CommentDto> commentDtos = commentRepository.findAllByItemId(itemId)
+                .stream()
+                .map(CommentMapper::toCommentDto)
+                .toList();
+
+        return ItemMapper.toItemDto(getItem(itemId), commentDtos);
     }
 
     public List<ItemDto> getUserItems(Long userId) {
@@ -104,6 +112,7 @@ public class ItemService {
                 .orElseThrow(() -> new ValidationException(ExceptionMessages.NOT_WAS_RENT));
 
 
-        return commentService.createComment(item, commentDto, user);
+        Comment comment = CommentMapper.toComment(commentDto, item, user);
+        return CommentMapper.toCommentDto(commentRepository.saveAndFlush(comment));
     }
 }
