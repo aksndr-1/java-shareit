@@ -10,8 +10,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.extention.ConditionsNotMetException;
-import ru.practicum.shareit.extention.NotFoundException;
+import ru.practicum.shareit.exceptions.ConditionsNotMetException;
+import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.WrongUserExeption;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,9 +55,16 @@ public class ExceptionsHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleWrongUserExeption(final WrongUserExeption e) {
+        log.info(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(final Exception e) {
-        log.warn("Непредвиденная ошибка", e);
+        log.warn("Непредвиденная ошибка:", e);
         return new ErrorResponse("Непредвиденная ошибка");
     }
 
@@ -64,8 +72,8 @@ public class ExceptionsHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> dealWithDataDoNotExistException(ConditionsNotMetException e) {
         Map<String, String> response = new HashMap<>();
-        log.error("Error {}", e.getMessage());
-        response.put("Error", e.getMessage());
+        log.error("error", e.getMessage());
+        response.put("error", e.getMessage());
         return response;
     }
 }

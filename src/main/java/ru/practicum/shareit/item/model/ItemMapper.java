@@ -1,48 +1,41 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.comment.model.CommentDto;
+import ru.practicum.shareit.user.model.User;
 
-/**
- * Класс, который отвечает за преобразование объектов Item в объекты ItemDto и наоборот.
- *
- * @author aksndr-1
- * @version 1.0
- */
-@Component
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+import java.util.List;
+
+@UtilityClass
 public class ItemMapper {
-
-    /**
-     * Метод преобразует объект Item в объект ItemDto.
-     *
-     * @param item объект Item
-     * @return объект ItemDto
-     */
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
-                .available(item.getAvailable())
+                .isAvailable(item.getIsAvailable())
                 .build();
     }
 
-    /**
-     * Метод преобразует объект ItemDto в объект Item.
-     *
-     * @param itemDto объект ItemDto
-     * @param ownerId идентификатор владельца предмета
-     * @return объект Item
-     */
-    public static Item toItem(ItemDto itemDto, Long ownerId) {
+    public static ItemDto toItemDto(Item item, List<CommentDto> comments) {
+        ItemDto itemOwnerDto = ItemDto.builder()
+                .id(item.getId())
+                .isAvailable(item.getIsAvailable())
+                .name(item.getName())
+                .description(item.getDescription())
+                .build();
+
+        itemOwnerDto.setComments(comments);
+        return itemOwnerDto;
+    }
+
+    public static Item toItem(ItemDto itemDto, User owner) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .owner(ownerId)
+                .isAvailable(itemDto.getIsAvailable())
+                .owner(owner)
                 .build();
     }
 }

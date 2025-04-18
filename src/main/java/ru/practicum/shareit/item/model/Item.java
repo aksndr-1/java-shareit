@@ -1,45 +1,39 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Builder;
-import lombok.Data;
-import ru.practicum.shareit.request.ItemRequest;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.*;
+import ru.practicum.shareit.user.model.User;
 
-/**
- * Класс, представляющий предмет.
- *
- * @author aksndr-1
- * @version 1.0
- */
-@Data
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "items")
 public class Item {
-    /**
-     * Идентификатор предмета.
-     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * Название предмета.
-     */
+    @Column(name = "name", nullable = false)
     private String name;
 
-    /**
-     * Описание предмета.
-     */
+    @Column(name = "description", nullable = false)
     private String description;
 
-    /**
-     * Доступность предмета.
-     */
-    private Boolean available;
+    @Column(name = "available", nullable = false)
+    private Boolean isAvailable;
 
-    /**
-     * Идентификатор владельца предмета.
-     */
-    private Long owner;
+    @ManyToOne
+    private User owner;
 
-    /**
-     * Запрос на предмет.
-     */
-    private ItemRequest request;
+    @Column(name = "request_id", nullable = false)
+    private Long request;
 }
